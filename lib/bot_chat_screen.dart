@@ -14,6 +14,17 @@ class BotChatScreen extends StatefulWidget {
 class _BotChatScreenState extends State<BotChatScreen> {
   final List<Map<String, dynamic>> _messages = [];
   final TextEditingController _controller = TextEditingController();
+  bool _chatEnded = false; // Flag to track if chat should stop
+
+  final List<String> _predefinedQuestions = [
+    "What is smishing?",
+    "How can I detect smishing?",
+    "What should I do if I receive a smishing message?",
+    "What are some signs of smishing?",
+    "Can smishing be harmful?",
+    "How can I protect myself from smishing attacks?",
+    "What does a typical smishing message look like?"
+  ];
 
   @override
   void initState() {
@@ -26,16 +37,25 @@ class _BotChatScreenState extends State<BotChatScreen> {
     setState(() {
       _messages.add({'text': msg, 'isUser': true});
     });
+
+    if (_shouldEndChat(msg)) {
+      _endChat();
+    }
   }
 
   void _addBotResponse(String msg) {
+    if (_chatEnded) return; // Stop further responses
+
     setState(() {
       _messages.add({'text': msg, 'isUser': false});
+      _messages.add({'text': '_options_', 'isUser': false}); // Insert options after bot response
     });
   }
 
   Future<void> _sendToFlask(String message) async {
-    final url = Uri.parse('http://127.0.0.1:5000/chat'); // change if using real device
+    if (_chatEnded) return; // Stop sending if chat is ended
+
+    final url = Uri.parse('http://192.168.1.4:5000/chat');
     try {
       final response = await http.post(
         url,
@@ -56,10 +76,28 @@ class _BotChatScreenState extends State<BotChatScreen> {
 
   void _handleSend() {
     final text = _controller.text.trim();
-    if (text.isEmpty) return;
+    if (text.isEmpty || _chatEnded) return;
     _controller.clear();
     _addUserMessage(text);
     _sendToFlask(text);
+  }
+
+  void _handlePredefinedQuestion(String question) {
+    if (_chatEnded) return;
+    _addUserMessage(question);
+    _sendToFlask(question);
+  }
+
+  bool _shouldEndChat(String message) {
+    final lowerMessage = message.toLowerCase();
+    return lowerMessage == "bye" || lowerMessage == "quit";
+  }
+
+  void _endChat() {
+    setState(() {
+      _chatEnded = true;
+      _messages.add({'text': "👋 Goodbye! Chat ended.", 'isUser': false});
+    });
   }
 
   @override
@@ -84,35 +122,40 @@ class _BotChatScreenState extends State<BotChatScreen> {
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final msg = _messages[index];
-                return ChatBubble(text: msg['text'], isUser: msg['isUser']);
+                return ChatBubble(
+                  text: msg['text'],
+                  isUser: msg['isUser'],
+                  onOptionSelected: _chatEnded ? null : _handlePredefinedQuestion,
+                );
               },
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      hintText: 'Type your message...',
-                      border: InputBorder.none,
+          if (!_chatEnded)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      decoration: const InputDecoration(
+                        hintText: 'Type your message...',
+                        border: InputBorder.none,
+                      ),
+                      onSubmitted: (_) => _handleSend(),
                     ),
-                    onSubmitted: (_) => _handleSend(),
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.send, color: Colors.deepPurple),
-                  onPressed: _handleSend,
-                ),
-              ],
+                  IconButton(
+                    icon: const Icon(Icons.send, color: Colors.deepPurple),
+                    onPressed: _handleSend,
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -122,11 +165,51 @@ class _BotChatScreenState extends State<BotChatScreen> {
 class ChatBubble extends StatelessWidget {
   final String text;
   final bool isUser;
+  final void Function(String)? onOptionSelected;
 
-  const ChatBubble({super.key, required this.text, required this.isUser});
+  const ChatBubble({
+    super.key,
+    required this.text,
+    required this.isUser,
+    this.onOptionSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
+    if (text == '_options_') {
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            "What is smishing?",
+            "How can I detect smishing?",
+            "What should I do if I receive a smishing message?",
+            "What are some signs of smishing?",
+            "Can smishing be harmful?",
+            "How can I protect myself from smishing attacks?",
+            "What does a typical smishing message look like?"
+          ].map((question) {
+            return ElevatedButton(
+              onPressed: onOptionSelected != null ? () => onOptionSelected!(question) : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurple,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: Text(
+                question,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+              ),
+            );
+          }).toList(),
+        ),
+      );
+    }
+
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
