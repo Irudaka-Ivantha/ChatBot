@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  http: ^0.13.6  # ✅ Add this line here
 
 dev_dependencies:
   flutter_test:
@@ -21,9 +22,10 @@ flutter:
   uses-material-design: true
 
   assets:
-    # You can add images or other assets here
+    # Uncomment and add paths if using images
+    # - assets/home.jpg
+    # - assets/logo.png
 
   fonts:
     - family: Inter
-      
       
