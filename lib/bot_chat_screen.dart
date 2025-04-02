@@ -35,7 +35,7 @@ class _BotChatScreenState extends State<BotChatScreen> {
   }
 
   Future<void> _sendToFlask(String message) async {
-    final url = Uri.parse('http://127.0.0.1:5000/chat'); // change if using real device
+  final url = Uri.parse('http://192.168.1.4:5000/chat'); // change if using real device
     try {
       final response = await http.post(
         url,

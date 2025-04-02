@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  http: ^0.13.6  # ✅ Add this line here
+  http: ^0.13.6  # ✅ HTTP dependency
 
 dev_dependencies:
   flutter_test:
@@ -22,10 +22,8 @@ flutter:
   uses-material-design: true
 
   assets:
-    # Uncomment and add paths if using images
+    - lib/assets/chatbot.png
+    - lib/assets/home.jpg
     # - assets/home.jpg
     # - assets/logo.png
 
-  fonts:
-    - family: Inter
-      
