@@ -24,6 +24,8 @@ flutter:
   assets:
     - lib/assets/chatbot.png
     - lib/assets/home.jpg
+    - lib/assets/home1.jpg
+    - lib/assets/OIP.jpeg
     # - assets/home.jpg
     # - assets/logo.png
 
