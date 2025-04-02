@@ -14,10 +14,11 @@ class HomePage extends StatelessWidget {
           // Background image section (stays behind everything else)
           Positioned.fill(
             child: Container(
+              margin: const EdgeInsets.only(top: 260.0),
               decoration: BoxDecoration(
                 image: const DecorationImage(
                   image: AssetImage(
-                      'lib/assets/home.jpg'), // Your background image
+                      'lib/assets/home1.jpg'), // Your background image
                   fit: BoxFit
                       .cover, // This ensures the image covers the full screen
                 ),
@@ -34,7 +35,7 @@ class HomePage extends StatelessWidget {
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xFF7B1FA2), Color(0xFF9C27B0)],
+                    colors: [Color.fromARGB(255, 44, 4, 61), Color(0xFF9C27B0)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -45,11 +46,21 @@ class HomePage extends StatelessWidget {
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.chat_bubble_outline,
-                        color: Colors.white, size: 60),
-                    SizedBox(height: 20),
-                    Text(
+                  children: [
+                    // Display the image
+                    Image.asset(
+                      'lib/assets/OIP.jpeg', // Make sure the image path is correct, it should be relative to the 'assets' folder
+                      height: 80, // Adjust size as needed
+                      width: 80,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.image_not_supported,
+                            size: 60, color: Colors.white);
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    // Welcome text
+                    const Text(
                       'Welcome to PurpleBot',
                       style: TextStyle(
                         color: Colors.white,
@@ -57,8 +68,9 @@ class HomePage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Text(
+                    const SizedBox(height: 10),
+                    // Assistant description
+                    const Text(
                       'Your friendly chat assistant',
                       style: TextStyle(
                         color: Colors.white70,
@@ -76,42 +88,43 @@ class HomePage extends StatelessWidget {
                   child: Column(
                     children: [
                       Card(
+                        color: const Color.fromARGB(255, 147, 32, 182),
                         elevation: 4,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(24.0),
-                          child: Column(
-                            children: [
-                              const Text(
-                                'Start chatting with your personal assistant.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              Image.asset(
-                                'lib/assets/chatbot.png', // Replace with your image file
-                                height: 80, // Adjust size as needed
-                                width: 80,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(Icons.image_not_supported,
-                                      size: 60, color: Colors.white);
-                                },
-                              ),
-                              const SizedBox(height: 20),
-                              // const Icon(
-                              //   Icons.auto_mode,
-                              //   size: 40,
-                              //   color: Color.fromARGB(255, 98, 23, 125),
-                              // ),
-                            ],
-                          ),
-                        ),
+                        // child: Padding(
+                        //   padding: const EdgeInsets.all(24.0),
+                        //   child: Column(
+                        //     children: [
+                        //       const Text(
+                        //         'Start chatting with your personal assistant.',
+                        //         textAlign: TextAlign.center,
+                        //         style: TextStyle(
+                        //           fontSize: 18,
+                        //           color: Colors.white,
+                        //         ),
+                        //       ),
+                        //       const SizedBox(height: 20),
+                        //       Image.asset(
+                        //         'lib/assets/OIP.jpeg', // Replace with your image file
+                        //         height: 80, // Adjust size as needed
+                        //         width: 80,
+                        //         fit: BoxFit.cover,
+                        //         errorBuilder: (context, error, stackTrace) {
+                        //           return const Icon(Icons.image_not_supported,
+                        //               size: 60, color: Colors.white);
+                        //         },
+                        //       ),
+                        //       const SizedBox(height: 20),
+                        //       // const Icon(
+                        //       //   Icons.auto_mode,
+                        //       //   size: 40,
+                        //       //   color: Color.fromARGB(255, 98, 23, 125),
+                        //       // ),
+                        //     ],
+                        //   ),
+                        // ),
                       ),
                       const Spacer(),
 
@@ -126,7 +139,7 @@ class HomePage extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             backgroundColor:
-                                const Color.fromARGB(255, 147, 32, 182),
+                                const Color.fromARGB(255, 135, 22, 169),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
